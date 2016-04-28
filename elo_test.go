@@ -1,35 +1,35 @@
 package elo
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-type Player struct {
-	name string
-	rating int
-	played int
-	won int
-	lost int
+func TestNewEloTableSetsValues(t *testing.T) {
+	table := NewEloTable(32, 2000)
+	assert.Equal(t, 32, table.constantFactor, "ConstantFactor is wrong")
+	assert.Equal(t, 2000, table.initialRating, "InitialRating is wrong")
+	assert.Empty(t, table.players, "Players map not empty")
 }
 
-type EloTable struct {
-	ConstantFactor int
-	Players map[string]Player
-	InitialRating int
+func TestRegisterPlayer(t *testing.T) {
+	table := NewEloTable(32, 2000)
+	table.Register("bruce")
+	assert.Equal(t, 2000, table.players["bruce"].rating, "initial rating wrong")
+	assert.Equal(t, "bruce", table.players["bruce"].name, "name wrong")
+	assert.Equal(t, 0, table.players["bruce"].played, "played should be 0")
+	assert.Equal(t, 0, table.players["bruce"].won, "won should be 0")
+	assert.Equal(t, 0, table.players["bruce"].lost, "lost should be 0")
 }
 
-func NewEloTable(constantFactor int, initialRating int) EloTable {
-	return EloTable{
-		ConstantFactor: constantFactor,
-		InitialRating: initialRating,
-		Players: make(map[string]Player),
+func (table *EloTable) Register(playerName string) {
+	table.players[playerName] = Player{
+		rating: table.initialRating,
+		name: playerName,
 	}
 }
-
-func TestNewEloTableSetsCorrectValues(t *testing.T) {
-	table := NewEloTable(32, 2000)
-	assert.Equal(t, 32, table.ConstantFactor, "ConstantFactor is wrong");
-	assert.Equal(t, 2000, table.InitialRating, "InitialRating is wrong");
-	assert.Empty(t, table.Players, "Players map not empty");
-}
+//func TestAddResult(t *testing.T) {
+//	table := NewEloTable(32, 2000)
+//	table.AddResult("bruce", "clark")
+//	assert.Equal(t, table[""])
+//}
