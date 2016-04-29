@@ -25,15 +25,16 @@ func (table *Table) Register(playerName string) {
 }
 
 // AddResult adds the result of a match to the table.
-func (table *Table) AddResult(winner, loser string) {
-	winningPlayer, _ := table.players[winner]
-	losingPlayer, _ := table.players[loser]
-	winningPlayer.played = 1
-	winningPlayer.lost = 0
-	winningPlayer.won = 1
-	losingPlayer.played = 1
-	losingPlayer.lost = 1
-	losingPlayer.won = 0
-	table.players[winner] = winningPlayer
-	table.players[loser] = losingPlayer
+func (table *Table) AddResult(winnerName, loserName string) {
+	winner, _ := table.players[winnerName]
+	loser, _ := table.players[loserName]
+
+	winner.played++
+	winner.won++
+
+	loser.played++
+	loser.lost++
+
+	table.players[winnerName] = winner
+	table.players[loserName] = loser
 }
