@@ -26,6 +26,14 @@ func (table *Table) Register(playerName string) {
 
 // AddResult adds the result of a match to the table.
 func (table *Table) AddResult(winner, loser string) {
-	winningPlayer := table.players[winner]
+	winningPlayer, _ := table.players[winner]
+	losingPlayer, _ := table.players[loser]
 	winningPlayer.played = 1
+	winningPlayer.lost = 0
+	winningPlayer.won = 1
+	losingPlayer.played = 1
+	losingPlayer.lost = 1
+	losingPlayer.won = 0
+	table.players[winner] = winningPlayer
+	table.players[loser] = losingPlayer
 }
