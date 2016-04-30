@@ -1,5 +1,10 @@
 package elo
 
+import (
+	"fmt"
+	"math"
+)
+
 // Table holds the ratings of all registered players.
 type Table struct {
 	constantFactor int
@@ -37,4 +42,13 @@ func (table *Table) AddResult(winnerName, loserName string) {
 
 	table.players[winnerName] = winner
 	table.players[loserName] = loser
+
+}
+
+func getNewEloRatings(oldRatingForPlayer1 int, oldRatingForPlayer2 int, k int) (int, int) {
+	eloDiff := oldRatingForPlayer2 - oldRatingForPlayer1
+	perc := 1 / (1 + math.Pow(10.0, float64(eloDiff)/400))
+	win := int(math.Floor(float64(k)*(1-perc) + 0.5))
+	fmt.Println(oldRatingForPlayer1, oldRatingForPlayer2, win)
+	return oldRatingForPlayer1 + win, oldRatingForPlayer2 - win
 }

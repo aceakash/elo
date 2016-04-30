@@ -66,8 +66,41 @@ func TestAddResultUpdatesExistingPlayersPlayedWonLostCounts(t *testing.T) {
 	assert.Equal(t, 5, table.players["clark"].lost, "clark should have lost 5")
 }
 
-//func TestAddResult(t *testing.T) {
-//	table := NewEloTable(32, 2000)
-//	table.AddResult("bruce", "clark")
-//	assert.Equal(t, table[""])
-//}
+func TestAddResultUpdatesRating(t *testing.T) {
+	table := getStdTableWithTwoPlayers(Player{name: "bruce", rating: 2100}, Player{name: "clark", rating: 1800})
+
+	table.AddResult("bruce", "clark")
+
+	bruce := table.players["bruce"]
+	clark := table.players["clark"]
+	assert.Equal(t, 2105, bruce.rating, "rating for bruce is wrong")
+	assert.Equal(t, 1795, clark.rating, "rating for clark is wrong")
+}
+
+func TestGetNewEloRatings(t *testing.T) {
+	var tests = []struct {
+		old1 int
+		old2 int
+		k    int
+		new1 int
+		new2 int
+	}{
+		{2000, 2000, 32, 2000 + 16, 2000 - 16},
+		{2100, 1800, 32, 2100 + 5, 1800 - 5},
+		{2050, 2000, 32, 2050 + 14, 2000 - 14},
+	}
+
+	for _, tt := range tests {
+		new1, new2 := getNewEloRatings(tt.old1, tt.old2, tt.k)
+		assert.Equal(t, tt.new1, new1, "new rating for player1 is wrong")
+		assert.Equal(t, tt.new2, new2, "new rating for player2 is wrong")
+	}
+
+}
+
+func getStdTableWithTwoPlayers(player1 Player, player2 Player) Table {
+	table := NewTable(32, 2000)
+	table.players[player1.name] = player1
+	table.players[player2.name] = player2
+	return table
+}
