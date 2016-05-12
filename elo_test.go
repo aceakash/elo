@@ -37,10 +37,7 @@ func TestAddResult(t *testing.T) {
 	assert.Equal(t, 1, table.players["clark"].played, "clark should have played 1 game")
 	assert.Equal(t, 0, table.players["clark"].won, "clark should have won 0 games")
 	assert.Equal(t, 1, table.players["clark"].lost, "clark should have lost 1 game")
+	assert.Equal(t, 1, len(table.matches))
+	assert.Equal(t, "bruce", table.matches[0].winnerName)
+	assert.Equal(t, "clark", table.matches[0].loserName)
 }
-
-//func TestAddResult(t *testing.T) {
-//	table := NewEloTable(32, 2000)
-//	table.AddResult("bruce", "clark")
-//	assert.Equal(t, table[""])
-//}

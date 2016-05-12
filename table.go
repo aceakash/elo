@@ -1,10 +1,13 @@
 package elo
 
+import "time"
+
 // Table holds the ratings of all registered players.
 type Table struct {
 	constantFactor int
-	players        map[string]Player
 	initialRating  int
+	players        map[string]Player
+	Matches        []Match
 }
 
 // NewTable creates a new table.
@@ -13,6 +16,7 @@ func NewTable(constantFactor int, initialRating int) Table {
 		constantFactor: constantFactor,
 		initialRating:  initialRating,
 		players:        make(map[string]Player),
+		Matches:        make([]Match, 0, 100),
 	}
 }
 
@@ -36,4 +40,11 @@ func (table *Table) AddResult(winner, loser string) {
 	losingPlayer.won = 0
 	table.players[winner] = winningPlayer
 	table.players[loser] = losingPlayer
+	match := Match{
+		WinnerName: winner,
+		LoserName:  loser,
+		RecordedOn: time.Now(),
+		Notes:      "was a close match!",
+	}
+	table.Matches = append(table.Matches, match)
 }

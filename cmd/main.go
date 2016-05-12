@@ -8,5 +8,6 @@ func main() {
 	table.Register("bruce")
 	table.Register("clark")
 	table.AddResult("bruce", "clark")
+	elo.PersistMatches(table.Matches)
 	fmt.Println(table)
 }
