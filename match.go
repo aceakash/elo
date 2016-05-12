@@ -36,3 +36,24 @@ func PersistMatches(matches []Match) {
 		panic(err)
 	}
 }
+
+// LoadMatches loads matches from matches.gob
+func LoadMatches() []Match {
+	f, err := os.Open("matches.gob")
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		if err := f.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	r := bufio.NewReader(f)
+	dec := gob.NewDecoder(r)
+	var matches []Match
+	err = dec.Decode(&matches)
+	if err != nil {
+		panic(err)
+	}
+	return matches
+}
