@@ -42,6 +42,15 @@ func main() {
 		case 2:
 			registerNewPlayer(&table)
 			store.Save(table)
+		case 3:
+			var winner, loser string
+			fmt.Print("\n\nWho won? ")
+			fmt.Scanln(&winner)
+			fmt.Print("\nWho lost? ")
+			fmt.Scanln(&loser)
+			table.AddResult(winner, loser)
+			store.Save(table)
+			fmt.Println("\nResult saved")
 		default:
 			fmt.Println("You chose ", option)
 		}
