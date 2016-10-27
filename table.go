@@ -34,6 +34,9 @@ func (table *Table) AddResult(winner, loser string) {
 	losingPlayer.Played = 1
 	losingPlayer.Lost = 1
 	losingPlayer.Won = 0
+	w, l := CalculateRating(winningPlayer.Rating, losingPlayer.Rating, table.ConstantFactor)
+	winningPlayer.Rating = w
+	losingPlayer.Rating = l
 	table.Players[winner] = winningPlayer
 	table.Players[loser] = losingPlayer
 }

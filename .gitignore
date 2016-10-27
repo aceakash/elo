@@ -27,3 +27,7 @@ _testmain.go
 # Created by .ignore support plugin (hsz.mobi)
 .idea
 .vscode
+
+cmd/eloTable.json
+cmd/main
+cmd/cmd
