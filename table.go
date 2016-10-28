@@ -3,7 +3,9 @@ package elo
 import (
 	"strings"
 	"time"
+	"sort"
 )
+
 
 
 // Table holds the ratings of all registered players.
@@ -75,6 +77,28 @@ func (table *Table) AddResult(winner, loser string) error {
 	table.GameLog.Entries = append(table.GameLog.Entries, gle)
 	return nil
 }
+
+
+
+func (table *Table) GetPlayersSortedByRating() []Player {
+	count := len(table.Players)
+	players := make([]Player, count)
+	i := 0
+	for _, player := range table.Players {
+		players[i] = player
+		i++
+	}
+	sort.Sort(Players(players))
+	reversed := make([]Player, count)
+
+	for i = 0; i < count; i++ {
+		reversed[i] = players[count-i-1]
+	}
+	return reversed
+}
+
+
+
 
 
 
