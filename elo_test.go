@@ -36,6 +36,14 @@ func TestAddResultUpdatesGameCounters(t *testing.T) {
 	assert.Equal(t, 1, table.Players["clark"].Lost, "clark should have lost 1 game")
 }
 
+func TestTable_AddResult_ReturnsErrorForNonExistentPlayer(t *testing.T) {
+	table := NewTable(32, 2000)
+	table.Register("bruce")
+	table.Register("clark")
+	err := table.AddResult("barry", "bruce")
+	assert.Equal(t, PlayerDoesNotExist, err, "Did not get expected error")
+}
+
 func TestCalculateRating(t *testing.T) {
 	// validated against http://www.3dkingdoms.com/chess/elo.htm
 	testData := []struct {

@@ -31,3 +31,5 @@ _testmain.go
 cmd/eloTable.json
 cmd/main
 cmd/cmd
+eloTable.json
+main

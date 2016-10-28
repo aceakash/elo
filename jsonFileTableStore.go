@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"io/ioutil"
+	"strings"
 )
 
 type JsonFileTableStore struct {
@@ -15,8 +16,12 @@ func (jfts *JsonFileTableStore) Load() (Table, error) {
 	var table Table
 	tableBytes, err := ioutil.ReadFile(jfts.Filepath)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error reading file")
-		return Table{}, err
+		fmt.Println("----", err.Error())
+		if strings.Contains(err.Error(), "no such file or directory") {
+			return NewTable(32, 2000), nil
+		} else {
+			return Table{}, err
+		}
 	}
 	if err = json.Unmarshal(tableBytes, &table); err != nil {
 		fmt.Fprintln(os.Stderr, "Error decoding JSON")
