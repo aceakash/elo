@@ -15,7 +15,7 @@ func (players Players) Len() int {
 }
 
 func (players Players) Less(i, j int) bool {
-	return players[i].Rating < players[j].Rating
+	return players[i].Rating > players[j].Rating
 }
 
 func (players Players) Swap(i, j int) {

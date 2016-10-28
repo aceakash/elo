@@ -89,12 +89,7 @@ func (table *Table) GetPlayersSortedByRating() []Player {
 		i++
 	}
 	sort.Sort(Players(players))
-	reversed := make([]Player, count)
-
-	for i = 0; i < count; i++ {
-		reversed[i] = players[count-i-1]
-	}
-	return reversed
+	return players
 }
 
 
