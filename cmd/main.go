@@ -87,7 +87,7 @@ func printEloTable(table elo.Table) {
 		fmt.Println("\nNo players registered!")
 	}
 	for _, player := range table.GetPlayersSortedByRating() {
-		fmt.Printf("\n%10s (%d) - Played %2d, Won %2d, Lost %2d", player.Name, player.Rating, player.Played, player.Won, player.Lost)
+		fmt.Printf("\n%25s (%d) - Played %2d, Won %2d, Lost %2d", player.Name, player.Rating, player.Played, player.Won, player.Lost)
 	}
 	fmt.Println("")
 }
