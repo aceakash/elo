@@ -10,8 +10,8 @@ func CalculateRating(winnerOldRating int, loserOldRating int, constantFactor int
 	expectedWinnerScore := getExpectedScore(winnerTransformedRating, loserTransformedRating)
 	expectedLoserScore := getExpectedScore(loserTransformedRating, winnerTransformedRating)
 
-	winnerNewRating := float64(winnerOldRating) + float64(constantFactor) * (1 - expectedWinnerScore)
-	loserNewRating := float64(loserOldRating) + float64(constantFactor) * (0 - expectedLoserScore)
+	winnerNewRating := float64(winnerOldRating) + float64(constantFactor)*(1-expectedWinnerScore)
+	loserNewRating := float64(loserOldRating) + float64(constantFactor)*(0-expectedLoserScore)
 	return round(winnerNewRating), round(loserNewRating)
 }
 
@@ -26,7 +26,7 @@ func getExpectedScore(transformedRating float64, opponentsTransformedRating floa
 
 func round(val float64) int {
 	if val < 0 {
-		return int(val-0.5)
+		return int(val - 0.5)
 	}
-	return int(val+0.5)
+	return int(val + 0.5)
 }

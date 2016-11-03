@@ -1,17 +1,17 @@
 package elo
 
 import (
-	"testing"
-	"sort"
 	"github.com/stretchr/testify/assert"
+	"sort"
+	"testing"
 )
 
 func TestPlayersCanBeSortedDescByRating(t *testing.T) {
 	playersSlice := []Player{
-		{Rating: 3000, Name: "Charlie", Lost: 2, Played: 3, Won: 1,},
-		{Rating: 2000, Name: "Bob", Lost: 2, Played: 3, Won: 1,},
-		{Rating: 4000, Name: "Dan", Lost: 2, Played: 3, Won: 1,},
-		{Rating: 1000, Name: "Alice", Lost: 2, Played: 3, Won: 1,},
+		{Rating: 3000, Name: "Charlie", Lost: 2, Played: 3, Won: 1},
+		{Rating: 2000, Name: "Bob", Lost: 2, Played: 3, Won: 1},
+		{Rating: 4000, Name: "Dan", Lost: 2, Played: 3, Won: 1},
+		{Rating: 1000, Name: "Alice", Lost: 2, Played: 3, Won: 1},
 	}
 	sort.Sort(Players(playersSlice))
 

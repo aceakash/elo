@@ -8,7 +8,19 @@ type GameLog struct {
 
 type GameLogEntry struct {
 	Created time.Time `json:created`
-	Winner string `json:winner`
-	Loser string `json:loser`
-	Notes string `json:notes`
+	Winner  string    `json:winner`
+	Loser   string    `json:loser`
+	Notes   string    `json:notes`
+}
+
+func (gl GameLog) Len() int {
+	return len(gl.Entries)
+}
+
+func (gl GameLog) Less(i, j int) bool {
+	return gl.Entries[i].Created.Unix() < gl.Entries[j].Created.Unix()
+}
+
+func (gl GameLog) Swap(i, j int) {
+	gl.Entries[i], gl.Entries[j] = gl.Entries[j], gl.Entries[i]
 }

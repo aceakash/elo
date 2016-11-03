@@ -44,6 +44,42 @@ func TestTable_AddResult_ReturnsErrorForNonExistentPlayer(t *testing.T) {
 	assert.Equal(t, PlayerDoesNotExist, err, "Did not get expected error")
 }
 
+func TestTable_RecalculateRatingsFromLog_ReturnsEmptyTable_ForEmptyGameLog(t *testing.T) {
+	table := NewTable(24, 1000)
+	err := table.RecalculateRatingsFromLog()
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Empty(t, table.Players, "There should be no players")
+	assert.Empty(t, table.GameLog.Entries, "There should be nothing in the game log")
+}
+
+func TestTable_RecalculateRatingsFromLog_Works(t *testing.T) {
+	wrongTable := NewTable(32, 2000)
+	wrongTable.Register("bruce")
+	wrongTable.Register("clark")
+	wrongTable.Register("diana")
+	wrongTable.AddResult("bruce", "clark")
+	wrongTable.AddResult("bruce", "diana")
+	wrongTable.AddResult("bruce", "diana") // double entry
+	wrongTable.AddResult("diana", "clark")
+
+	accurateTable := NewTable(32, 2000)
+	accurateTable.Register("bruce")
+	accurateTable.Register("clark")
+	accurateTable.Register("diana")
+	accurateTable.AddResult("bruce", "clark")
+	accurateTable.AddResult("bruce", "diana")
+	accurateTable.AddResult("diana", "clark")
 
 
+	wrongTable.GameLog.Entries = append(wrongTable.GameLog.Entries[0:2], wrongTable.GameLog.Entries[3:]...)
+	err := wrongTable.RecalculateRatingsFromLog()
 
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, accurateTable.Players["bruce"].Rating, wrongTable.Players["bruce"].Rating, "Bruce has wrong rating")
+	assert.Equal(t, accurateTable.Players["clark"].Rating, wrongTable.Players["clark"].Rating, "Clark has wrong rating")
+	assert.Equal(t, accurateTable.Players["diana"].Rating, wrongTable.Players["diana"].Rating, "Diana has wrong rating")
+}
