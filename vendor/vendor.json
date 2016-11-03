@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "wu3jCY1Ny2tPdsj36W6YH1Bm2No=",
+			"path": "github.com/gorilla/handlers",
+			"revision": "e1b2144f2167de0e1042d1d35e5cba5119d4fb5d",
+			"revisionTime": "2016-10-28T13:32:15Z"
+		}
+	],
+	"rootPath": "github.com/aceakash/elo"
+}
