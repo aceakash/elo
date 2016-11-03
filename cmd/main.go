@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/aceakash/elo"
+	"strings"
 )
 
 func main() {
@@ -14,28 +15,29 @@ func main() {
 		panic(err)
 	}
 
-	prompt:
+prompt:
 	for {
 		fmt.Println("\nWhat would you like to do?\n")
 		fmt.Println("(1) View the ratings table")
 		fmt.Println("(2) Register a new player")
 		fmt.Println("(3) Record outcome of a game")
 		fmt.Println("(4) View all recorded games")
-		fmt.Println("(5) Quit")
+		fmt.Println("(5) View all recorded games")
+		fmt.Println("(6) Quit")
 		fmt.Print("\nChoose an option: ")
 		option := 0
 		_, err := fmt.Scanln(&option)
 		if err != nil {
 			fmt.Println("Err", err)
 		}
-		if option < 1 || option > 5 {
-			fmt.Println("Oops. That's an invalid option - valid entries are 1 - 5.")
+		if option < 1 || option > 6 {
+			fmt.Println("Oops. That's an invalid option - valid entries are 1 - 6.")
 			continue prompt
 		}
 		switch option {
-		case 5:
+		case 6:
 			fmt.Print()
-			break prompt;
+			break prompt
 		case 1:
 			printEloTable(table)
 		case 2:
@@ -65,6 +67,26 @@ func main() {
 				fmt.Printf("[%s] %s defeated %s\n", gle.Created, gle.Winner, gle.Loser)
 			}
 			fmt.Println("\n\n")
+		case 5:
+			fmt.Println("\n\nAre you sure you want to recreate the ratings table from the log? (y/n): ")
+			var answer string
+			fmt.Scanln(&answer)
+			answer = strings.ToLower(answer)
+			if answer != "y" && answer != "n" {
+				fmt.Println("!!!!!! Oops - please only answer in y or n")
+				continue prompt
+			}
+			if answer == "n" {
+				fmt.Println("No worries, table left untouched.")
+				continue prompt
+			}
+			err := table.RecalculateRatingsFromLog()
+			if err != nil {
+				fmt.Println("!!!!!! Oops - something went wrong! Here's the error:")
+				fmt.Print(err)
+				continue prompt
+			}
+			fmt.Println("\nAll done, ratings table is now in sync with the game log.")
 		default:
 			fmt.Println("You chose ", option)
 		}
@@ -91,4 +113,3 @@ func printEloTable(table elo.Table) {
 	}
 	fmt.Println("")
 }
-

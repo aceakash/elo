@@ -5,4 +5,3 @@ type TableStore interface {
 	Save(*Table) error
 	Load() (*Table, error)
 }
-

@@ -1,19 +1,17 @@
 package elo
 
 import (
+	"sort"
 	"strings"
 	"time"
-	"sort"
 )
-
-
 
 // Table holds the ratings of all registered players.
 type Table struct {
-	ConstantFactor int `json:constantFactor`
+	ConstantFactor int               `json:constantFactor`
 	Players        map[string]Player `json:players`
-	InitialRating  int `json:initialRating`
-	GameLog		GameLog	`json:gameLog`
+	InitialRating  int               `json:initialRating`
+	GameLog        GameLog           `json:gameLog`
 }
 
 // NewTable creates a new table.
@@ -22,7 +20,7 @@ func NewTable(constantFactor int, initialRating int) Table {
 		ConstantFactor: constantFactor,
 		InitialRating:  initialRating,
 		Players:        make(map[string]Player),
-		GameLog:		NewGameLog(),
+		GameLog:        NewGameLog(),
 	}
 }
 
@@ -49,7 +47,6 @@ func sanitiseName(name string) string {
 }
 
 // AddResult adds the result of a match to the table.
-
 func (table *Table) AddResult(winner, loser string) error {
 	winningPlayer, exists := table.Players[winner]
 	if !exists {
@@ -70,15 +67,13 @@ func (table *Table) AddResult(winner, loser string) error {
 	table.Players[loser] = losingPlayer
 	gle := GameLogEntry{
 		Created: time.Now(),
-		Winner: winner,
-		Loser: loser,
-		Notes: "",
+		Winner:  winner,
+		Loser:   loser,
+		Notes:   "",
 	}
 	table.GameLog.Entries = append(table.GameLog.Entries, gle)
 	return nil
 }
-
-
 
 func (table *Table) GetPlayersSortedByRating() []Player {
 	count := len(table.Players)
@@ -92,8 +87,17 @@ func (table *Table) GetPlayersSortedByRating() []Player {
 	return players
 }
 
-
-
-
-
-
+func (table *Table) RecalculateRatingsFromLog() error {
+	sort.Sort(table.GameLog)
+	for _, entry := range table.GameLog.Entries {
+		if _, found := table.Players[entry.Winner]; !found {
+			table.Register(entry.Winner)
+		}
+		if _, found := table.Players[entry.Loser]; !found {
+			table.Register(entry.Loser)
+		}
+		table.AddResult(entry.Winner, entry.Loser)
+		table.GameLog.Entries[len(table.GameLog.Entries)-1] = entry
+	}
+	return nil
+}

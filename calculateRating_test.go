@@ -1,18 +1,18 @@
 package elo
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestCalculateRating(t *testing.T) {
 	// validated against http://www.3dkingdoms.com/chess/elo.htm
 	testData := []struct {
-		winnerRating int
-		loserRating int
-		constantFactor int
+		winnerRating         int
+		loserRating          int
+		constantFactor       int
 		expectedWinnerRating int
-		expectedLoserRating int
+		expectedLoserRating  int
 	}{
 		{1000, 1000, 24, 1012, 988},
 		{1000, 1000, 32, 1016, 984},

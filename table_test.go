@@ -2,6 +2,7 @@ package elo
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -44,6 +45,44 @@ func TestTable_AddResult_ReturnsErrorForNonExistentPlayer(t *testing.T) {
 	assert.Equal(t, PlayerDoesNotExist, err, "Did not get expected error")
 }
 
+func TestTable_RecalculateRatingsFromLog_ReturnsEmptyTable_ForEmptyGameLog(t *testing.T) {
+	table := NewTable(24, 1000)
+	err := table.RecalculateRatingsFromLog()
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Empty(t, table.Players, "There should be no players")
+	assert.Empty(t, table.GameLog.Entries, "There should be nothing in the game log")
+}
 
+func TestTable_RecalculateRatingsFromLog_ReturnsRightTable_ForSingleEntryGameLog(t *testing.T) {
+	table := NewTable(32, 2000)
+	firstOfJan, _ := time.Parse("2006-01-02", "2012-01-01")
+	table.GameLog.Entries = append(table.GameLog.Entries, GameLogEntry{
+		Created: firstOfJan,
+		Winner:  "clark",
+		Loser:   "bruce",
+	})
 
+	err := table.RecalculateRatingsFromLog()
 
+	if err != nil {
+		t.Fatal(err)
+	}
+	expectedBruce := Player{
+		Name:   "bruce",
+		Played: 1,
+		Won:    0,
+		Lost:   1,
+		Rating: 1984,
+	}
+	expectedClark := Player{
+		Name:   "clark",
+		Played: 1,
+		Won:    1,
+		Lost:   0,
+		Rating: 2016,
+	}
+	assert.Equal(t, expectedBruce, table.Players["bruce"], "Bruce was not as expected")
+	assert.Equal(t, expectedClark, table.Players["clark"], "Clark was not as expected")
+}

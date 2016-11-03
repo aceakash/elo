@@ -3,8 +3,8 @@ package elo
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -37,6 +37,3 @@ func (jfts *JsonFileTableStore) Save(table Table) error {
 	}
 	return ioutil.WriteFile(jfts.Filepath, b, 0600)
 }
-
-
-
