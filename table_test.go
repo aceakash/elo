@@ -2,7 +2,6 @@ package elo
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -55,34 +54,32 @@ func TestTable_RecalculateRatingsFromLog_ReturnsEmptyTable_ForEmptyGameLog(t *te
 	assert.Empty(t, table.GameLog.Entries, "There should be nothing in the game log")
 }
 
-func TestTable_RecalculateRatingsFromLog_ReturnsRightTable_ForSingleEntryGameLog(t *testing.T) {
-	table := NewTable(32, 2000)
-	firstOfJan, _ := time.Parse("2006-01-02", "2012-01-01")
-	table.GameLog.Entries = append(table.GameLog.Entries, GameLogEntry{
-		Created: firstOfJan,
-		Winner:  "clark",
-		Loser:   "bruce",
-	})
+func TestTable_RecalculateRatingsFromLog_Works(t *testing.T) {
+	wrongTable := NewTable(32, 2000)
+	wrongTable.Register("bruce")
+	wrongTable.Register("clark")
+	wrongTable.Register("diana")
+	wrongTable.AddResult("bruce", "clark")
+	wrongTable.AddResult("bruce", "diana")
+	wrongTable.AddResult("bruce", "diana") // double entry
+	wrongTable.AddResult("diana", "clark")
 
-	err := table.RecalculateRatingsFromLog()
+	accurateTable := NewTable(32, 2000)
+	accurateTable.Register("bruce")
+	accurateTable.Register("clark")
+	accurateTable.Register("diana")
+	accurateTable.AddResult("bruce", "clark")
+	accurateTable.AddResult("bruce", "diana")
+	accurateTable.AddResult("diana", "clark")
+
+
+	wrongTable.GameLog.Entries = append(wrongTable.GameLog.Entries[0:2], wrongTable.GameLog.Entries[3:]...)
+	err := wrongTable.RecalculateRatingsFromLog()
 
 	if err != nil {
 		t.Fatal(err)
 	}
-	expectedBruce := Player{
-		Name:   "bruce",
-		Played: 1,
-		Won:    0,
-		Lost:   1,
-		Rating: 1984,
-	}
-	expectedClark := Player{
-		Name:   "clark",
-		Played: 1,
-		Won:    1,
-		Lost:   0,
-		Rating: 2016,
-	}
-	assert.Equal(t, expectedBruce, table.Players["bruce"], "Bruce was not as expected")
-	assert.Equal(t, expectedClark, table.Players["clark"], "Clark was not as expected")
+	assert.Equal(t, accurateTable.Players["bruce"].Rating, wrongTable.Players["bruce"].Rating, "Bruce has wrong rating")
+	assert.Equal(t, accurateTable.Players["clark"].Rating, wrongTable.Players["clark"].Rating, "Clark has wrong rating")
+	assert.Equal(t, accurateTable.Players["diana"].Rating, wrongTable.Players["diana"].Rating, "Diana has wrong rating")
 }
