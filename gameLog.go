@@ -7,10 +7,17 @@ type GameLog struct {
 }
 
 type GameLogEntry struct {
-	Created time.Time `json:created`
-	Winner  string    `json:winner`
-	Loser   string    `json:loser`
-	Notes   string    `json:notes`
+	Created      time.Time    `json:created`
+	Winner       string       `json:winner`
+	Loser        string       `json:loser`
+	Notes        string       `json:notes`
+	WinnerChange RatingChange `json:winnerChange`
+	LoserChange  RatingChange `json:loserChange`
+}
+
+type RatingChange struct {
+	Before int `json:before`
+	After  int `json:after`
 }
 
 func (gl GameLog) Len() int {

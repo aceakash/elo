@@ -60,9 +60,11 @@ func (table *Table) AddResult(winner, loser string) error {
 	winningPlayer.Won++
 	losingPlayer.Played++
 	losingPlayer.Lost++
-	w, l := CalculateRating(winningPlayer.Rating, losingPlayer.Rating, table.ConstantFactor)
-	winningPlayer.Rating = w
-	losingPlayer.Rating = l
+	wOld := winningPlayer.Rating
+	lOld := losingPlayer.Rating
+	wNew, lNew := CalculateRating(wOld, lOld, table.ConstantFactor)
+	winningPlayer.Rating = wNew
+	losingPlayer.Rating = lNew
 	table.Players[winner] = winningPlayer
 	table.Players[loser] = losingPlayer
 	gle := GameLogEntry{
@@ -70,6 +72,14 @@ func (table *Table) AddResult(winner, loser string) error {
 		Winner:  winner,
 		Loser:   loser,
 		Notes:   "",
+		WinnerChange: RatingChange{
+			Before: wOld,
+			After: wNew,
+		},
+		LoserChange: RatingChange{
+			Before: lOld,
+			After: lNew,
+		},
 	}
 	table.GameLog.Entries = append(table.GameLog.Entries, gle)
 	return nil
@@ -88,9 +98,11 @@ func (table *Table) GetPlayersSortedByRating() []Player {
 }
 
 func (table *Table) RecalculateRatingsFromLog() error {
-	sort.Sort(table.GameLog)
+	origGameLog := table.GameLog
+	sort.Sort(origGameLog)
 	table.Players = make(map[string]Player)
-	for _, entry := range table.GameLog.Entries {
+	table.GameLog.Entries = make([]GameLogEntry, 0)
+	for _, entry := range origGameLog.Entries {
 		if _, found := table.Players[entry.Winner]; !found {
 			table.Register(entry.Winner)
 		}
@@ -98,7 +110,7 @@ func (table *Table) RecalculateRatingsFromLog() error {
 			table.Register(entry.Loser)
 		}
 		table.AddResult(entry.Winner, entry.Loser)
-		table.GameLog.Entries[len(table.GameLog.Entries)-1] = entry
+		table.GameLog.Entries[len(table.GameLog.Entries)-1].Created = entry.Created
 	}
 	return nil
 }

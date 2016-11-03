@@ -64,7 +64,8 @@ prompt:
 		case 4:
 			fmt.Println("\n\n")
 			for _, gle := range table.GameLog.Entries {
-				fmt.Printf("[%s] %s defeated %s\n", gle.Created, gle.Winner, gle.Loser)
+				created := gle.Created.Format("_2 Jan 2006")
+				fmt.Printf("[%s] %17s (%d -> %d)   defeated %17s (%d -> %d)\n", created, gle.Winner, gle.WinnerChange.Before, gle.WinnerChange.After, gle.Loser, gle.LoserChange.Before, gle.LoserChange.After)
 			}
 			fmt.Println("\n\n")
 		case 5:
@@ -86,6 +87,7 @@ prompt:
 				fmt.Print(err)
 				continue prompt
 			}
+			store.Save(table) // todo: handle errors
 			fmt.Println("\nAll done, ratings table is now in sync with the game log.")
 		default:
 			fmt.Println("You chose ", option)
