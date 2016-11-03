@@ -22,7 +22,7 @@ prompt:
 		fmt.Println("(2) Register a new player")
 		fmt.Println("(3) Record outcome of a game")
 		fmt.Println("(4) View all recorded games")
-		fmt.Println("(5) View all recorded games")
+		fmt.Println("(5) Recalculate ratings from game log")
 		fmt.Println("(6) Quit")
 		fmt.Print("\nChoose an option: ")
 		option := 0

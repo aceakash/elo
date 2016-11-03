@@ -89,6 +89,7 @@ func (table *Table) GetPlayersSortedByRating() []Player {
 
 func (table *Table) RecalculateRatingsFromLog() error {
 	sort.Sort(table.GameLog)
+	table.Players = make(map[string]Player)
 	for _, entry := range table.GameLog.Entries {
 		if _, found := table.Players[entry.Winner]; !found {
 			table.Register(entry.Winner)
