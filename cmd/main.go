@@ -48,13 +48,13 @@ prompt:
 			fmt.Print("\n\nWho won? ")
 			fmt.Scanln(&winner)
 			if _, exists := table.Players[winner]; !exists {
-				fmt.Println("\nOops - that's not a registered player.")
+				fmt.Println("\n!!!!!!!!!! Oops - that's not a registered player.")
 				continue prompt
 			}
 			fmt.Print("\nWho lost? ")
 			fmt.Scanln(&loser)
-			if _, exists := table.Players[winner]; !exists {
-				fmt.Println("\nOops - that's not a registered player.")
+			if _, exists := table.Players[loser]; !exists {
+				fmt.Println("\n!!!!!!!!!! Oops - that's not a registered player.")
 				continue prompt
 			}
 			table.AddResult(winner, loser)
@@ -74,7 +74,7 @@ prompt:
 			fmt.Scanln(&answer)
 			answer = strings.ToLower(answer)
 			if answer != "y" && answer != "n" {
-				fmt.Println("!!!!!! Oops - please only answer in y or n")
+				fmt.Println("!!!!!!!!!! Oops - please only answer in y or n")
 				continue prompt
 			}
 			if answer == "n" {
@@ -83,7 +83,7 @@ prompt:
 			}
 			err := table.RecalculateRatingsFromLog()
 			if err != nil {
-				fmt.Println("!!!!!! Oops - something went wrong! Here's the error:")
+				fmt.Println("!!!!!!!!!! Oops - something went wrong! Here's the error:")
 				fmt.Print(err)
 				continue prompt
 			}
@@ -100,7 +100,7 @@ func registerNewPlayer(table *elo.Table) {
 	fmt.Scanln(&name)
 	err := table.Register(name)
 	if err == elo.PlayerAlreadyExists {
-		fmt.Println("Oops. That player has already been registered\n")
+		fmt.Println("!!!!!!!!!! Oops - that player has already been registered\n")
 		return
 	}
 	fmt.Printf("\n%s has been registered\n", name)
