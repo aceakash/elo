@@ -42,6 +42,8 @@ func TestTable_AddResult_ReturnsErrorForNonExistentPlayer(t *testing.T) {
 	table.Register("clark")
 	err := table.AddResult("barry", "bruce")
 	assert.Equal(t, PlayerDoesNotExist, err, "Did not get expected error")
+	err2 := table.AddResult("bruce", "judith")
+	assert.Equal(t, PlayerDoesNotExist, err2, "Did not get expected error")
 }
 
 func TestTable_RecalculateRatingsFromLog_ReturnsEmptyTable_ForEmptyGameLog(t *testing.T) {
