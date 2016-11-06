@@ -27,7 +27,7 @@ func main() {
 		user := strings.ToLower(r.URL.Query().Get("user_name"))
 
 		fmt.Println("Text", text)
-		commands := strings.Split(text, "+")
+		commands := strings.Split(text, " ")
 		if len(commands) < 1 {
 			fmt.Fprint(w, "Not sure what you want to know. Valid commands are: h2h, help")
 		}
