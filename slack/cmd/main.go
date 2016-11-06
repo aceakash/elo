@@ -35,9 +35,11 @@ func main() {
 		case "help":
 			usage(w)
 		case "ratings":
+			fmt.Fprint(w, "```\n")
 			for _, player := range table.GetPlayersSortedByRating() {
-				fmt.Fprintf(w, "\n%25s (%d) - Played %2d, Won %2d, Lost %2d", player.Name, player.Rating, player.Played, player.Won, player.Lost)
+				fmt.Fprintf(w, "%25s (%d) - Played %2d, Won %2d, Lost %2d\n", player.Name, player.Rating, player.Played, player.Won, player.Lost)
 			}
+			fmt.Fprint(w, "```")
 		//case "gamelog":
 		//	for _, gle := range table.GameLog.Entries {
 		//		created := gle.Created.Format("_2 Jan 2006")
