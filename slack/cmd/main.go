@@ -61,7 +61,7 @@ func main() {
 			}
 			fmt.Fprintf(w, "You are %d - %d against %s", userPts, againstPts, against)
 		default:
-			fmt.Fprintf(w, "[%s] %s", time.Now().Format(time.RFC3339), text)
+			usage(w)
 		}
 	}
 
@@ -85,5 +85,5 @@ func removeAtPrefix(slackUserName string) string {
 func usage(w http.ResponseWriter) {
 	fmt.Fprint(w, "Valid commands are:\n")
 	fmt.Fprint(w, "help: show this help message\n")
-	fmt.Fprint(w, "h2h <@another_player>: see your head-to-head stats vs another player")
+	fmt.Fprint(w, "h2h <another_player>: see your head-to-head stats vs another player")
 }
