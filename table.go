@@ -115,8 +115,14 @@ func (table *Table) RecalculateRatingsFromLog() error {
 	return nil
 }
 
-func (table Table) HeadToHead(player1, player2 string) (int, int) {
+func (table Table) HeadToHead(player1, player2 string) (int, int, error) {
 	var player1Pts, player2Pts int
+	if _, found := table.Players[player1]; !found {
+		return 0,0, PlayerDoesNotExist
+	}
+	if _, found := table.Players[player2]; !found {
+		return 0,0, PlayerDoesNotExist
+	}
 	for _, game := range table.GameLog.Entries {
 		if game.Winner == player1 && game.Loser == player2 {
 			player1Pts++
@@ -127,5 +133,5 @@ func (table Table) HeadToHead(player1, player2 string) (int, int) {
 			continue
 		}
 	}
-	return player1Pts, player2Pts
+	return player1Pts, player2Pts, nil
 }

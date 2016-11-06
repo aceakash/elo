@@ -26,7 +26,8 @@ func main() {
 		text := strings.ToLower(r.URL.Query().Get("text"))
 		user := strings.ToLower(r.URL.Query().Get("user_name"))
 
-		commands := strings.Split(text, " ")
+		fmt.Println("Text", text)
+		commands := strings.Split(text, "+")
 		if len(commands) < 1 {
 			fmt.Fprint(w, "Not sure what you want to know. Valid commands are: h2h, help")
 		}
@@ -49,7 +50,13 @@ func main() {
 			}
 			against := commands[1]
 			normalisedAgainst := removeAtPrefix(against)
-			userPts, againstPts := table.HeadToHead(user, normalisedAgainst)
+			userPts, againstPts, err := table.HeadToHead(user, normalisedAgainst)
+			if err != nil {
+				if err == elo.PlayerDoesNotExist {
+					fmt.Fprintf(w, "%s does not seem to be registered", against)
+					return
+				}
+			}
 			fmt.Fprintf(w, "You are %d - %d against %s", userPts, againstPts, against)
 		default:
 			fmt.Fprintf(w, "[%s] %s", time.Now().Format(time.RFC3339), text)
@@ -68,7 +75,10 @@ func main() {
 	}
 }
 func removeAtPrefix(slackUserName string) string {
-	return slackUserName[1:]
+	if slackUserName[0] == '@' {
+		return slackUserName[1:]
+	}
+	return slackUserName
 }
 func usage(w http.ResponseWriter) {
 	fmt.Fprint(w, "Valid commands are:\n")
