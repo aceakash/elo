@@ -34,10 +34,10 @@ func main() {
 		switch commands[0] {
 		case "help":
 			usage(w)
-		//case "ratings":
-		//	for _, player := range table.GetPlayersSortedByRating() {
-		//		fmt.Fprintf(w, "\n%25s (%d) - Played %2d, Won %2d, Lost %2d", player.Name, player.Rating, player.Played, player.Won, player.Lost)
-		//	}
+		case "ratings":
+			for _, player := range table.GetPlayersSortedByRating() {
+				fmt.Fprintf(w, "\n%25s (%d) - Played %2d, Won %2d, Lost %2d", player.Name, player.Rating, player.Played, player.Won, player.Lost)
+			}
 		//case "gamelog":
 		//	for _, gle := range table.GameLog.Entries {
 		//		created := gle.Created.Format("_2 Jan 2006")
