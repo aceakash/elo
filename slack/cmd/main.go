@@ -84,9 +84,9 @@ func removeAtPrefix(slackUserName string) string {
 	return slackUserName
 }
 func usage(w http.ResponseWriter) {
-	fmt.Fprint(w, "Valid commands are:\n")
-	fmt.Fprint(w, "help: show this help message\n")
-	fmt.Fprint(w, "ratings: see the ratings table")
-	fmt.Fprint(w, "h2h <another_player>: see your head-to-head stats vs another player")
-	fmt.Fprint(w, "log: see all the games played so far")
+	fmt.Fprintln(w, "Valid commands are:")
+	fmt.Fprintln(w, "help: show this help message")
+	fmt.Fprintln(w, "ratings: see the ratings table")
+	fmt.Fprintln(w, "h2h <another_player>: see your head-to-head stats vs another player")
+	fmt.Fprintln(w, "log: see all the games played so far")
 }
