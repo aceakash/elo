@@ -39,11 +39,13 @@ func main() {
 				fmt.Fprintf(w, "%25s (%d) - Played %2d, Won %2d, Lost %2d\n", player.Name, player.Rating, player.Played, player.Won, player.Lost)
 			}
 			fmt.Fprint(w, "```")
-		//case "gamelog":
-		//	for _, gle := range table.GameLog.Entries {
-		//		created := gle.Created.Format("_2 Jan 2006")
-		//		fmt.Fprintf(w, "[%s] %17s (%d -> %d)   defeated %17s (%d -> %d)\n", created, gle.Winner, gle.WinnerChange.Before, gle.WinnerChange.After, gle.Loser, gle.LoserChange.Before, gle.LoserChange.After)
-		//	}
+		case "log":
+			fmt.Fprint(w, "```\n")
+			for _, gle := range table.GameLog.Entries {
+				created := gle.Created.Format("_2 Jan 2006")
+				fmt.Fprintf(w, "[%s] %17s (%d -> %d)   defeated %17s (%d -> %d)\n", created, gle.Winner, gle.WinnerChange.Before, gle.WinnerChange.After, gle.Loser, gle.LoserChange.Before, gle.LoserChange.After)
+			}
+			fmt.Fprint(w, "```")
 		case "h2h":
 			if len(commands) < 2 {
 				usage(w)
@@ -84,5 +86,7 @@ func removeAtPrefix(slackUserName string) string {
 func usage(w http.ResponseWriter) {
 	fmt.Fprint(w, "Valid commands are:\n")
 	fmt.Fprint(w, "help: show this help message\n")
+	fmt.Fprint(w, "ratings: see the ratings table")
 	fmt.Fprint(w, "h2h <another_player>: see your head-to-head stats vs another player")
+	fmt.Fprint(w, "log: see all the games played so far")
 }
