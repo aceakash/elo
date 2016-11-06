@@ -114,3 +114,18 @@ func (table *Table) RecalculateRatingsFromLog() error {
 	}
 	return nil
 }
+
+func (table Table) HeadToHead(player1, player2 string) (int, int) {
+	var player1Pts, player2Pts int
+	for _, game := range table.GameLog.Entries {
+		if game.Winner == player1 && game.Loser == player2 {
+			player1Pts++
+			continue
+		}
+		if game.Winner == player2 && game.Loser == player1 {
+			player2Pts++
+			continue
+		}
+	}
+	return player1Pts, player2Pts
+}
