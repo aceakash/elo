@@ -23,7 +23,6 @@ func main() {
 
 	RespondToPoolCommands := func(w http.ResponseWriter, r *http.Request) {
 		text := strings.ToLower(r.URL.Query().Get("text"))
-		user := strings.ToLower(r.URL.Query().Get("user_name"))
 
 		fmt.Println("Text", text)
 		commands := strings.Split(text, " ")
@@ -51,16 +50,17 @@ func main() {
 				usage(w)
 				return
 			}
-			against := commands[1]
-			normalisedAgainst := removeAtPrefix(against)
-			userPts, againstPts, err := table.HeadToHead(user, normalisedAgainst)
+			player := commands[1]
+			normalisedPlayer := removeAtPrefix(player)
+			playerH2HRecords, err := table.HeadToHeadAll(normalisedPlayer)
 			if err != nil {
 				if err == elo.PlayerDoesNotExist {
-					fmt.Fprintf(w, "%s does not seem to be registered", against)
+					fmt.Fprintf(w, "%s does not seem to be registered", player)
 					return
 				}
 			}
-			fmt.Fprintf(w, "You are %d - %d against %s", userPts, againstPts, against)
+			fmt.Println("H2H for ", player, playerH2HRecords)
+			printH2H(w, player, playerH2HRecords)
 		default:
 			usage(w)
 		}
@@ -77,6 +77,15 @@ func main() {
 		log.Fatal("Error while starting the server", err)
 	}
 }
+func printH2H(w http.ResponseWriter, player string, h2HRecords []elo.H2HRecord) {
+	fmt.Fprintln(w, "```")
+	fmt.Fprintf(w, "H2H for %s:\n", player)
+	for _, h2hr := range h2HRecords {
+		fmt.Fprintf(w, "%d - %d  vs %s\n", h2hr.Won, h2hr.Lost, h2hr.Opponent)
+	}
+	fmt.Fprintln(w, "```")
+}
+
 func removeAtPrefix(slackUserName string) string {
 	if slackUserName[0] == '@' {
 		return slackUserName[1:]

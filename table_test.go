@@ -86,22 +86,40 @@ func TestTable_RecalculateRatingsFromLog_Works(t *testing.T) {
 	assert.Equal(t, accurateTable.Players["diana"].Rating, wrongTable.Players["diana"].Rating, "Diana has wrong rating")
 }
 
-func TestTable_HeadToHead_PlayersWhoHaveNotPlayedEachOther(t *testing.T) {
-	table := NewTable(24, 1000)
-	table.Register("steve")
-	table.Register("tony")
-	table.Register("natasha")
-	table.AddResult("steve", "natasha")
-	table.AddResult("natasha", "tony")
-	var stevePts, tonyPts int
+//func TestTable_HeadToHead_PlayersWhoHaveNotPlayedEachOther(t *testing.T) {
+//	table := NewTable(24, 1000)
+//	table.Register("steve")
+//	table.Register("tony")
+//	table.Register("natasha")
+//	table.AddResult("steve", "natasha")
+//	table.AddResult("natasha", "tony")
+//	var stevePts, tonyPts int
+//
+//	stevePts, tonyPts = table.HeadToHead("steve", "tony")
+//	assert.Equal(t, 0, stevePts)
+//	assert.Equal(t, 0, tonyPts)
+//}
 
-	stevePts, tonyPts = table.HeadToHead("steve", "tony")
-	assert.Equal(t, 0, stevePts)
-	assert.Equal(t, 0, tonyPts)
-}
+//func TestTable_HeadToHead_OrderOfPlayersDoesNotMatter(t *testing.T) {
+//	table := NewTable(24, 1000)
+//	table.Register("steve")
+//	table.Register("tony")
+//	table.AddResult("steve", "tony")
+//	table.AddResult("steve", "tony")
+//	table.AddResult("steve", "tony")
+//	table.AddResult("tony", "steve")
+//
+//	stevePts, tonyPts := table.HeadToHead("steve", "tony")
+//	assert.Equal(t, 3, stevePts)
+//	assert.Equal(t, 1, tonyPts)
+//
+//	tonyPts, stevePts = table.HeadToHead("tony", "steve")
+//	assert.Equal(t, 3, stevePts)
+//	assert.Equal(t, 1, tonyPts)
+//}
 
-func TestTable_HeadToHead_OrderOfPlayersDoesNotMatter(t *testing.T) {
-	table := NewTable(24, 1000)
+func TestTable_HeadToHeadAll(t *testing.T) {
+	table := NewTable(32, 2000)
 	table.Register("steve")
 	table.Register("tony")
 	table.AddResult("steve", "tony")
@@ -109,11 +127,9 @@ func TestTable_HeadToHead_OrderOfPlayersDoesNotMatter(t *testing.T) {
 	table.AddResult("steve", "tony")
 	table.AddResult("tony", "steve")
 
-	stevePts, tonyPts := table.HeadToHead("steve", "tony")
-	assert.Equal(t, 3, stevePts)
-	assert.Equal(t, 1, tonyPts)
-
-	tonyPts, stevePts = table.HeadToHead("tony", "steve")
-	assert.Equal(t, 3, stevePts)
-	assert.Equal(t, 1, tonyPts)
+	recs, err := table.HeadToHeadAll("steve")
+	assert.Nil(t, err)
+	assert.Equal(t, 3, recs[0].Won)
+	assert.Equal(t, 1, recs[0].Lost)
+	assert.Equal(t, "tony", recs[0].Opponent)
 }
