@@ -10,7 +10,7 @@ import (
 	"github.com/aceakash/elo"
 )
 
-func main() {
+func loadTableFromJsonStore() elo.Table {
 	store := elo.JsonFileTableStore{
 		Filepath: "eloTable.json",
 	}
@@ -18,6 +18,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	return table
+}
+
+func main() {
+	table := loadTableFromJsonStore()
 
 	r := http.NewServeMux()
 
@@ -33,12 +38,14 @@ func main() {
 		case "help":
 			usage(w)
 		case "ratings":
+			table = loadTableFromJsonStore()
 			fmt.Fprint(w, "```\n")
 			for _, player := range table.GetPlayersSortedByRating() {
 				fmt.Fprintf(w, "%25s (%d) - Played %2d, Won %2d, Lost %2d\n", player.Name, player.Rating, player.Played, player.Won, player.Lost)
 			}
 			fmt.Fprint(w, "```")
 		case "log":
+			table = loadTableFromJsonStore()
 			fmt.Fprint(w, "```\n")
 			for _, gle := range table.GameLog.Entries {
 				created := gle.Created.Format("_2 Jan 2006")
@@ -46,6 +53,7 @@ func main() {
 			}
 			fmt.Fprint(w, "```")
 		case "h2h":
+			table = loadTableFromJsonStore()
 			if len(commands) < 2 {
 				usage(w)
 				return
@@ -72,7 +80,7 @@ func main() {
 	port := os.Getenv("PORT")
 
 	fmt.Println("Starting on port ", port)
-	err = http.ListenAndServe(":"+port, handlers.CompressHandler(r))
+	err := http.ListenAndServe(":"+port, handlers.CompressHandler(r))
 	if err != nil {
 		log.Fatal("Error while starting the server", err)
 	}
@@ -96,6 +104,6 @@ func usage(w http.ResponseWriter) {
 	fmt.Fprintln(w, "Valid commands are:")
 	fmt.Fprintln(w, "help: show this help message")
 	fmt.Fprintln(w, "ratings: see the ratings table")
-	fmt.Fprintln(w, "h2h <another_player>: see your head-to-head stats vs another player")
+	fmt.Fprintln(w, "h2h <player_name>: see player's head-to-head stats vs everyone else")
 	fmt.Fprintln(w, "log: see all the games played so far")
 }
