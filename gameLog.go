@@ -20,6 +20,12 @@ type RatingChange struct {
 	After  int `json:after`
 }
 
+func NewGameLog() GameLog {
+	return GameLog{
+		Entries: make([]GameLogEntry, 0),
+	}
+}
+
 func (gl GameLog) Len() int {
 	return len(gl.Entries)
 }

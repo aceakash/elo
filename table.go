@@ -24,12 +24,6 @@ func NewTable(constantFactor int, initialRating int) Table {
 	}
 }
 
-func NewGameLog() GameLog {
-	return GameLog{
-		Entries: make([]GameLogEntry, 0),
-	}
-}
-
 // Register adds a new player to the table.
 func (table *Table) Register(playerName string) error {
 	playerName = sanitiseName(playerName)
@@ -42,6 +36,7 @@ func (table *Table) Register(playerName string) error {
 	}
 	return nil
 }
+
 func sanitiseName(name string) string {
 	return strings.ToLower(name)
 }
@@ -85,6 +80,7 @@ func (table *Table) AddResult(winner, loser string) error {
 	return nil
 }
 
+// GetPlayersSortedByRating returns a slice of players, sorted in desc order of rating.
 func (table *Table) GetPlayersSortedByRating() []Player {
 	count := len(table.Players)
 	players := make([]Player, count)

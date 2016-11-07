@@ -86,38 +86,6 @@ func TestTable_RecalculateRatingsFromLog_Works(t *testing.T) {
 	assert.Equal(t, accurateTable.Players["diana"].Rating, wrongTable.Players["diana"].Rating, "Diana has wrong rating")
 }
 
-//func TestTable_HeadToHead_PlayersWhoHaveNotPlayedEachOther(t *testing.T) {
-//	table := NewTable(24, 1000)
-//	table.Register("steve")
-//	table.Register("tony")
-//	table.Register("natasha")
-//	table.AddResult("steve", "natasha")
-//	table.AddResult("natasha", "tony")
-//	var stevePts, tonyPts int
-//
-//	stevePts, tonyPts = table.HeadToHead("steve", "tony")
-//	assert.Equal(t, 0, stevePts)
-//	assert.Equal(t, 0, tonyPts)
-//}
-
-//func TestTable_HeadToHead_OrderOfPlayersDoesNotMatter(t *testing.T) {
-//	table := NewTable(24, 1000)
-//	table.Register("steve")
-//	table.Register("tony")
-//	table.AddResult("steve", "tony")
-//	table.AddResult("steve", "tony")
-//	table.AddResult("steve", "tony")
-//	table.AddResult("tony", "steve")
-//
-//	stevePts, tonyPts := table.HeadToHead("steve", "tony")
-//	assert.Equal(t, 3, stevePts)
-//	assert.Equal(t, 1, tonyPts)
-//
-//	tonyPts, stevePts = table.HeadToHead("tony", "steve")
-//	assert.Equal(t, 3, stevePts)
-//	assert.Equal(t, 1, tonyPts)
-//}
-
 func TestTable_HeadToHeadAll(t *testing.T) {
 	table := NewTable(32, 2000)
 	table.Register("steve")
@@ -132,4 +100,27 @@ func TestTable_HeadToHeadAll(t *testing.T) {
 	assert.Equal(t, 3, recs[0].Won)
 	assert.Equal(t, 1, recs[0].Lost)
 	assert.Equal(t, "tony", recs[0].Opponent)
+}
+
+func TestTable_GetPlayersSortedByRating(t *testing.T) {
+	// arrange
+	table := NewTable(32, 2000)
+	table.Register("charles")
+	table.Register("alice")
+	table.Register("bob")
+
+	table.AddResult("alice", "bob")
+	table.AddResult("alice", "bob")
+	table.AddResult("alice", "charles")
+	table.AddResult("bob", "charles")
+	table.AddResult("bob", "charles")
+	table.AddResult("charles", "bob")
+
+	// act
+	players := table.GetPlayersSortedByRating()
+
+	// assert
+	assert.Equal(t, "alice", players[0].Name)
+	assert.Equal(t, "bob", players[1].Name)
+	assert.Equal(t, "charles", players[2].Name)
 }
