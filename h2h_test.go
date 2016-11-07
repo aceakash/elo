@@ -5,18 +5,48 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAddGameToH2HRecords(t *testing.T) {
+func TestAddGameToH2HRecords_ForSinglePlayer(t *testing.T) {
+	// arrange
 	recs := make([]H2HRecord, 0)
-	recs = AddGameToH2HRecords("tony", recs, GameLogEntry{
+
+	// act
+	recs = registerGameForPlayerH2H("tony", recs, GameLogEntry{
 		Winner: "steve",
 		Loser: "tony",
 	})
-	recs = AddGameToH2HRecords("tony", recs, GameLogEntry{
+	recs = registerGameForPlayerH2H("tony", recs, GameLogEntry{
+		Winner: "steve",
+		Loser: "tony",
+	})
+	recs = registerGameForPlayerH2H("tony", recs, GameLogEntry{
+		Winner: "tony",
+		Loser: "steve",
+	})
+	recs = registerGameForPlayerH2H("tony", recs, GameLogEntry{
 		Winner: "steve",
 		Loser: "tony",
 	})
 
-	assert.Equal(t, "steve", recs[0].Opponent)
-	assert.Equal(t, 0, recs[0].Won)
-	assert.Equal(t, 2, recs[0].Lost)
+	// assert
+	expected := []H2HRecord{
+		{
+			Opponent: "steve",
+			Won: 1,
+			Lost: 3,
+		},
+	}
+	assert.Equal(t, expected, recs)
+}
+
+func TestTable_HeadToHeadAll_NonExistentPlayer(t *testing.T) {
+	// arrange
+	table := NewTable(32, 2000)
+	table.Register("peter")
+	table.Register("natasha")
+
+	// act
+	_, err := table.HeadToHeadAll("gruffalo")
+
+	// assert
+	assert.Equal(t, PlayerDoesNotExist, err)
 }

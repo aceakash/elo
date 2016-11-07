@@ -1,41 +1,38 @@
 package elo
 
-import "fmt"
-
+// H2HRecord is a head-to-head record for a player against a particular opponent.
 type H2HRecord struct {
 	Opponent string
 	Won      int
 	Lost     int
 }
 
-func AddGameToH2HRecords(player string, playerH2HRecords []H2HRecord, game GameLogEntry) []H2HRecord {
-	processed := playerH2HRecords
+func registerGameForPlayerH2H(player string, playerH2HRecords []H2HRecord, game GameLogEntry) []H2HRecord {
+	latestH2HRecords := playerH2HRecords
 	if player == game.Winner {
 		found := false
-		for i, record := range processed {
+		for i, record := range latestH2HRecords {
 			if record.Opponent == game.Loser {
 				found = true
 				record.Won++
-				processed[i] = record
+				latestH2HRecords[i] = record
 			}
 		}
-		fmt.Println("3", processed)
 		if !found {
 			record := H2HRecord{
 				Opponent: game.Loser,
 				Won: 1,
 			}
-			processed = append(processed, record)
-			fmt.Println("3", processed)
+			latestH2HRecords = append(latestH2HRecords, record)
 		}
 	}
 	if player == game.Loser {
 		found := false
-		for i, record := range processed {
+		for i, record := range latestH2HRecords {
 			if record.Opponent == game.Winner {
 				found = true
 				record.Lost++
-				processed[i] = record
+				latestH2HRecords[i] = record
 			}
 		}
 		if !found {
@@ -43,24 +40,11 @@ func AddGameToH2HRecords(player string, playerH2HRecords []H2HRecord, game GameL
 				Opponent: game.Winner,
 				Lost: 1,
 			}
-			processed = append(processed, record)
+			latestH2HRecords = append(latestH2HRecords, record)
 		}
 	}
-	return processed
+	return latestH2HRecords
 }
-
-//func findOrCreateH2HRecord(playerH2HRecords []H2HRecord, opponent string) (record H2HRecord, found bool) {
-//	found = false
-//	newH2HR := H2HRecord{
-//		opponent: opponent,
-//	}
-//	for _, h2hr := range []H2HRecord(playerH2HRecords) {
-//		if h2hr.opponent == opponent {
-//			return h2hr, true
-//		}
-//	}
-//	return newH2HR, false
-//}
 
 // HeadToHeadAll returns all the h2h stats for the specified player.
 func (table Table) HeadToHeadAll(player string) ([]H2HRecord, error) {
@@ -70,7 +54,7 @@ func (table Table) HeadToHeadAll(player string) ([]H2HRecord, error) {
 	}
 
 	for _, game := range table.GameLog.Entries {
-		res = AddGameToH2HRecords(player, res, game)
+		res = registerGameForPlayerH2H(player, res, game)
 	}
 	return res, nil
 }
