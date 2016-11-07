@@ -23,7 +23,6 @@ func main() {
 
 	RespondToPoolCommands := func(w http.ResponseWriter, r *http.Request) {
 		text := strings.ToLower(r.URL.Query().Get("text"))
-		user := strings.ToLower(r.URL.Query().Get("user_name"))
 
 		fmt.Println("Text", text)
 		commands := strings.Split(text, " ")
@@ -56,7 +55,7 @@ func main() {
 			playerH2HRecords, err := table.HeadToHeadAll(normalisedPlayer)
 			if err != nil {
 				if err == elo.PlayerDoesNotExist {
-					fmt.Fprintf(w, "%s does not seem to be registered", against)
+					fmt.Fprintf(w, "%s does not seem to be registered", player)
 					return
 				}
 			}
