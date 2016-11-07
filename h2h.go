@@ -1,5 +1,7 @@
 package elo
 
+import "fmt"
+
 type H2HRecord struct {
 	Opponent string
 	Won      int
@@ -10,26 +12,30 @@ func AddGameToH2HRecords(player string, playerH2HRecords []H2HRecord, game GameL
 	processed := playerH2HRecords
 	if player == game.Winner {
 		found := false
-		for _, record := range processed {
+		for i, record := range processed {
 			if record.Opponent == game.Loser {
 				found = true
 				record.Won++
+				processed[i] = record
 			}
 		}
+		fmt.Println("3", processed)
 		if !found {
 			record := H2HRecord{
 				Opponent: game.Loser,
 				Won: 1,
 			}
 			processed = append(processed, record)
+			fmt.Println("3", processed)
 		}
 	}
 	if player == game.Loser {
 		found := false
-		for _, record := range processed {
+		for i, record := range processed {
 			if record.Opponent == game.Winner {
 				found = true
 				record.Lost++
+				processed[i] = record
 			}
 		}
 		if !found {

@@ -78,10 +78,12 @@ func main() {
 	}
 }
 func printH2H(w http.ResponseWriter, player string, h2HRecords []elo.H2HRecord) {
+	fmt.Fprintln("```")
 	fmt.Fprintf(w, "H2H for %s:\n", player)
 	for _, h2hr := range h2HRecords {
 		fmt.Fprintf(w, "%d - %d  vs %s\n", h2hr.Won, h2hr.Lost, h2hr.Opponent)
 	}
+	fmt.Fprintln("```")
 }
 
 func removeAtPrefix(slackUserName string) string {
