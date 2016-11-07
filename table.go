@@ -135,3 +135,5 @@ func (table Table) HeadToHead(player1, player2 string) (int, int, error) {
 	}
 	return player1Pts, player2Pts, nil
 }
+
+

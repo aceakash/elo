@@ -51,16 +51,17 @@ func main() {
 				usage(w)
 				return
 			}
-			against := commands[1]
-			normalisedAgainst := removeAtPrefix(against)
-			userPts, againstPts, err := table.HeadToHead(user, normalisedAgainst)
+			player := commands[1]
+			normalisedPlayer := removeAtPrefix(player)
+			playerH2HRecords, err := table.HeadToHeadAll(normalisedPlayer)
 			if err != nil {
 				if err == elo.PlayerDoesNotExist {
 					fmt.Fprintf(w, "%s does not seem to be registered", against)
 					return
 				}
 			}
-			fmt.Fprintf(w, "You are %d - %d against %s", userPts, againstPts, against)
+			fmt.Println("H2H for ", player, playerH2HRecords)
+			printH2H(w, player, playerH2HRecords)
 		default:
 			usage(w)
 		}
@@ -77,6 +78,13 @@ func main() {
 		log.Fatal("Error while starting the server", err)
 	}
 }
+func printH2H(w http.ResponseWriter, player string, h2HRecords []elo.H2HRecord) {
+	fmt.Fprintf(w, "H2H for %s:", player)
+	for _, h2hr := range h2HRecords {
+		fmt.Fprintf(w, "%d - %d  vs %s", h2hr.Won, h2hr.Lost, h2hr.Opponent)
+	}
+}
+
 func removeAtPrefix(slackUserName string) string {
 	if slackUserName[0] == '@' {
 		return slackUserName[1:]

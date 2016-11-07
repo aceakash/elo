@@ -30,12 +30,12 @@ prompt:
 		if err != nil {
 			fmt.Println("Err", err)
 		}
-		if option < 1 || option > 6 {
+		if option < 1 || option > 7 {
 			fmt.Println("Oops. That's an invalid option - valid entries are 1 - 6.")
 			continue prompt
 		}
 		switch option {
-		case 6:
+		case 7:
 			fmt.Print()
 			break prompt
 		case 1:
@@ -89,6 +89,19 @@ prompt:
 			}
 			store.Save(table) // todo: handle errors
 			fmt.Println("\nAll done, ratings table is now in sync with the game log.")
+
+		case 6:
+			var player string
+			fmt.Scanln(&player)
+			normalisedPlayer := player
+			playerH2HRecords, err := table.HeadToHeadAll(normalisedPlayer)
+			if err != nil {
+				if err == elo.PlayerDoesNotExist {
+					//fmt.Fprintf(w, "%s does not seem to be registered", against)
+					return
+				}
+			}
+			fmt.Println("H2H for ", player, playerH2HRecords)
 		default:
 			fmt.Println("You chose ", option)
 		}
