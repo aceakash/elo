@@ -63,6 +63,7 @@ func (table *Table) AddResult(winner, loser string) error {
 	table.Players[winner] = winningPlayer
 	table.Players[loser] = losingPlayer
 	gle := GameLogEntry{
+		Id: RandSeq(8),
 		Created: time.Now(),
 		Winner:  winner,
 		Loser:   loser,

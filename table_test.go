@@ -23,7 +23,7 @@ func TestRegisterPlayer(t *testing.T) {
 	assert.Equal(t, 0, table.Players["bruce"].Lost, "lost should be 0")
 }
 
-func TestAddResultUpdatesGameCounters(t *testing.T) {
+func TestTable_AddResult_UpdatesGameCounters(t *testing.T) {
 	table := NewTable(32, 2000)
 	table.Register("bruce")
 	table.Register("clark")

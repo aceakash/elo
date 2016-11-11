@@ -49,7 +49,7 @@ func main() {
 			fmt.Fprint(w, "```\n")
 			for _, gle := range table.GameLog.Entries {
 				created := gle.Created.Format("_2 Jan 2006")
-				fmt.Fprintf(w, "[%s] %17s (%d -> %d)   defeated %17s (%d -> %d)\n", created, gle.Winner, gle.WinnerChange.Before, gle.WinnerChange.After, gle.Loser, gle.LoserChange.Before, gle.LoserChange.After)
+				fmt.Fprintf(w, "[%s] [%s] %17s (%d -> %d)   defeated %17s (%d -> %d)\n", gle.Id, created, gle.Winner, gle.WinnerChange.Before, gle.WinnerChange.After, gle.Loser, gle.LoserChange.Before, gle.LoserChange.After)
 			}
 			fmt.Fprint(w, "```")
 		case "h2h":
