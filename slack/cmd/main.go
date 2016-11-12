@@ -47,8 +47,15 @@ func main() {
 		case "log":
 			table = loadTableFromJsonStore()
 			fmt.Fprint(w, "```\n")
-			for _, gle := range table.GameLog.Entries {
-				created := gle.Created.Format("_2 Jan 2006")
+			var logsToSkip int
+			if len(table.GameLog.Entries) > 50 {
+				logsToSkip = len(table.GameLog.Entries) - 50
+			}
+			for i, gle := range table.GameLog.Entries {
+				if i < logsToSkip {
+					continue
+				}
+				created := gle.Created.Format("02 Jan")
 				fmt.Fprintf(w, "[%s] [%s] %17s (%d -> %d)   defeated %17s (%d -> %d)\n", gle.Id, created, gle.Winner, gle.WinnerChange.Before, gle.WinnerChange.After, gle.Loser, gle.LoserChange.Before, gle.LoserChange.After)
 			}
 			fmt.Fprint(w, "```")
