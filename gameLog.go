@@ -7,13 +7,14 @@ type GameLog struct {
 }
 
 type GameLogEntry struct {
-	Id           string        `json:id`
+	Id           string       `json:id`
 	Created      time.Time    `json:created`
 	Winner       string       `json:winner`
 	Loser        string       `json:loser`
 	Notes        string       `json:notes`
 	WinnerChange RatingChange `json:winnerChange`
 	LoserChange  RatingChange `json:loserChange`
+	AddedBy      string       `json:addedBy`
 }
 
 type RatingChange struct {
