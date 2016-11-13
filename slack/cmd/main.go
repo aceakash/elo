@@ -66,7 +66,6 @@ func main() {
 				fmt.Fprint(w, "Sorry, an error occurred processing that ... please contact the admin")
 				return
 			}
-			fmt.Println("H2H for ", player, playerH2HRecords)
 			printH2H(w, player, playerH2HRecords)
 		case "result":
 			writeLock.Lock()
@@ -132,6 +131,7 @@ func usage(w http.ResponseWriter) {
 	fmt.Fprintln(w, "ratings: see the ratings table")
 	fmt.Fprintln(w, "h2h <player_name>: see player's head-to-head stats vs everyone else")
 	fmt.Fprintln(w, "log: see all the games played so far")
+	fmt.Fprintln(w, "result <winner> <loser>: add a result")
 }
 
 func loadTableFromJsonStore() elo.Table {
