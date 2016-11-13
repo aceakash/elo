@@ -47,7 +47,7 @@ func main() {
 					continue
 				}
 				created := gle.Created.Format("02 Jan")
-				fmt.Fprintf(w, "[%s] [%s] %17s (%d -> %d)   defeated %17s (%d -> %d) - added by %s\n", gle.Id, created, gle.Winner, gle.WinnerChange.Before, gle.WinnerChange.After, gle.Loser, gle.LoserChange.Before, gle.LoserChange.After, user)
+				fmt.Fprintf(w, "[%s] [%s] %17s (%d -> %d)   defeated %17s (%d -> %d) - added by %s\n", gle.Id, created, gle.Winner, gle.WinnerChange.Before, gle.WinnerChange.After, gle.Loser, gle.LoserChange.Before, gle.LoserChange.After, gle.AddedBy)
 			}
 			fmt.Fprint(w, "```")
 		case "h2h":
