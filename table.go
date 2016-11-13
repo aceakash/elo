@@ -42,7 +42,7 @@ func sanitiseName(name string) string {
 }
 
 // AddResult adds the result of a match to the table.
-func (table *Table) AddResult(winner, loser string) error {
+func (table *Table) AddResult(winner, loser, reporter string) error {
 	winningPlayer, exists := table.Players[winner]
 	if !exists {
 		return PlayerDoesNotExist
@@ -76,6 +76,7 @@ func (table *Table) AddResult(winner, loser string) error {
 			Before: lOld,
 			After: lNew,
 		},
+		AddedBy: reporter,
 	}
 	table.GameLog.Entries = append(table.GameLog.Entries, gle)
 	return nil
@@ -108,7 +109,7 @@ func (table *Table) RecalculateRatingsFromLog() error {
 		if _, found := table.Players[entry.Loser]; !found {
 			table.Register(entry.Loser)
 		}
-		table.AddResult(entry.Winner, entry.Loser)
+		table.AddResult(entry.Winner, entry.Loser, entry.AddedBy)
 		table.GameLog.Entries[len(table.GameLog.Entries)-1].Created = entry.Created
 	}
 	return nil

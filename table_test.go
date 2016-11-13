@@ -27,7 +27,7 @@ func TestTable_AddResult_UpdatesGameCounters(t *testing.T) {
 	table := NewTable(32, 2000)
 	table.Register("bruce")
 	table.Register("clark")
-	table.AddResult("bruce", "clark")
+	table.AddResult("bruce", "clark", "")
 	assert.Equal(t, 1, table.Players["bruce"].Played, "bruce should have played 1 game")
 	assert.Equal(t, 1, table.Players["bruce"].Won, "bruce should have won 1 game")
 	assert.Equal(t, 0, table.Players["bruce"].Lost, "bruce should have lost 0 games")
@@ -40,9 +40,9 @@ func TestTable_AddResult_ReturnsErrorForNonExistentPlayer(t *testing.T) {
 	table := NewTable(32, 2000)
 	table.Register("bruce")
 	table.Register("clark")
-	err := table.AddResult("barry", "bruce")
+	err := table.AddResult("barry", "bruce", "")
 	assert.Equal(t, PlayerDoesNotExist, err, "Did not get expected error")
-	err2 := table.AddResult("bruce", "judith")
+	err2 := table.AddResult("bruce", "judith", "")
 	assert.Equal(t, PlayerDoesNotExist, err2, "Did not get expected error")
 }
 
@@ -61,18 +61,18 @@ func TestTable_RecalculateRatingsFromLog_Works(t *testing.T) {
 	wrongTable.Register("bruce")
 	wrongTable.Register("clark")
 	wrongTable.Register("diana")
-	wrongTable.AddResult("bruce", "clark")
-	wrongTable.AddResult("bruce", "diana")
-	wrongTable.AddResult("bruce", "diana") // double entry
-	wrongTable.AddResult("diana", "clark")
+	wrongTable.AddResult("bruce", "clark", "")
+	wrongTable.AddResult("bruce", "diana", "")
+	wrongTable.AddResult("bruce", "diana", "") // double entry
+	wrongTable.AddResult("diana", "clark", "")
 
 	accurateTable := NewTable(32, 2000)
 	accurateTable.Register("bruce")
 	accurateTable.Register("clark")
 	accurateTable.Register("diana")
-	accurateTable.AddResult("bruce", "clark")
-	accurateTable.AddResult("bruce", "diana")
-	accurateTable.AddResult("diana", "clark")
+	accurateTable.AddResult("bruce", "clark", "")
+	accurateTable.AddResult("bruce", "diana", "")
+	accurateTable.AddResult("diana", "clark", "")
 
 
 	wrongTable.GameLog.Entries = append(wrongTable.GameLog.Entries[0:2], wrongTable.GameLog.Entries[3:]...)
@@ -90,10 +90,10 @@ func TestTable_HeadToHeadAll(t *testing.T) {
 	table := NewTable(32, 2000)
 	table.Register("steve")
 	table.Register("tony")
-	table.AddResult("steve", "tony")
-	table.AddResult("steve", "tony")
-	table.AddResult("steve", "tony")
-	table.AddResult("tony", "steve")
+	table.AddResult("steve", "tony", "")
+	table.AddResult("steve", "tony", "")
+	table.AddResult("steve", "tony", "")
+	table.AddResult("tony", "steve", "")
 
 	recs, err := table.HeadToHeadAll("steve")
 	assert.Nil(t, err)
@@ -109,12 +109,12 @@ func TestTable_GetPlayersSortedByRating(t *testing.T) {
 	table.Register("alice")
 	table.Register("bob")
 
-	table.AddResult("alice", "bob")
-	table.AddResult("alice", "bob")
-	table.AddResult("alice", "charles")
-	table.AddResult("bob", "charles")
-	table.AddResult("bob", "charles")
-	table.AddResult("charles", "bob")
+	table.AddResult("alice", "bob", "")
+	table.AddResult("alice", "bob", "")
+	table.AddResult("alice", "charles", "")
+	table.AddResult("bob", "charles", "")
+	table.AddResult("bob", "charles", "")
+	table.AddResult("charles", "bob", "")
 
 	// act
 	players := table.GetPlayersSortedByRating()

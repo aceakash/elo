@@ -18,6 +18,7 @@ func main() {
 
 	RespondToPoolCommands := func(w http.ResponseWriter, r *http.Request) {
 		text := strings.ToLower(r.URL.Query().Get("text"))
+		user := strings.ToLower(r.URL.Query().Get("user_name"))
 
 		fmt.Println("Text", text)
 		commands := strings.Split(text, " ")
@@ -46,7 +47,7 @@ func main() {
 					continue
 				}
 				created := gle.Created.Format("02 Jan")
-				fmt.Fprintf(w, "[%s] [%s] %17s (%d -> %d)   defeated %17s (%d -> %d)\n", gle.Id, created, gle.Winner, gle.WinnerChange.Before, gle.WinnerChange.After, gle.Loser, gle.LoserChange.Before, gle.LoserChange.After)
+				fmt.Fprintf(w, "[%s] [%s] %17s (%d -> %d)   defeated %17s (%d -> %d) - added by %s\n", gle.Id, created, gle.Winner, gle.WinnerChange.Before, gle.WinnerChange.After, gle.Loser, gle.LoserChange.Before, gle.LoserChange.After, user)
 			}
 			fmt.Fprint(w, "```")
 		case "h2h":
@@ -77,7 +78,7 @@ func main() {
 			}
 			winner := removeAtPrefix(commands[1])
 			loser := removeAtPrefix(commands[2])
-			err := table.AddResult(winner, loser)
+			err := table.AddResult(winner, loser, user)
 			if err != nil {
 				if err == elo.PlayerDoesNotExist {
 					fmt.Fprint(w, "Are you sure both those players are registered? Check the ratings table...")

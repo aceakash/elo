@@ -57,7 +57,7 @@ prompt:
 				fmt.Println("\n!!!!!!!!!! Oops - that's not a registered player.")
 				continue prompt
 			}
-			table.AddResult(winner, loser)
+			table.AddResult(winner, loser, "admin")
 
 			store.Save(table)
 			fmt.Println("\nResult saved")
