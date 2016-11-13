@@ -8,22 +8,12 @@ import (
 	"os"
 	"strings"
 	"github.com/aceakash/elo"
+	"sync"
 )
-
-func loadTableFromJsonStore() elo.Table {
-	store := elo.JsonFileTableStore{
-		Filepath: "eloTable.json",
-	}
-	table, err := store.Load()
-	if err != nil {
-		panic(err)
-	}
-	return table
-}
 
 func main() {
 	table := loadTableFromJsonStore()
-
+	var writeLock sync.Mutex
 	r := http.NewServeMux()
 
 	RespondToPoolCommands := func(w http.ResponseWriter, r *http.Request) {
@@ -73,9 +63,38 @@ func main() {
 					fmt.Fprintf(w, "%s does not seem to be registered", player)
 					return
 				}
+				fmt.Fprint(w, "Sorry, an error occurred processing that ... please contact the admin")
+				return
 			}
 			fmt.Println("H2H for ", player, playerH2HRecords)
 			printH2H(w, player, playerH2HRecords)
+		case "result":
+			writeLock.Lock()
+			defer writeLock.Unlock()
+			table = loadTableFromJsonStore()
+			if len(commands) < 3 {
+				usage(w)
+				return
+			}
+			winner := removeAtPrefix(commands[1])
+			loser := removeAtPrefix(commands[2])
+			err := table.AddResult(winner, loser)
+			if err != nil {
+				if err == elo.PlayerDoesNotExist {
+					fmt.Fprint(w, "Are you sure both those players are registered? Check the ratings table...")
+					return
+				}
+				fmt.Fprint(w, "Sorry, an error occurred processing that ... please contact the admin")
+				return
+			}
+			err = saveTableToJsonStore(table)
+			if err != nil {
+				fmt.Println("Error writing table to file", err)
+				fmt.Fprint(w, "Sorry there was an error - please contact the admin")
+				return
+			}
+			addedGameEntry := table.GameLog.Entries[len(table.GameLog.Entries)-1]
+			fmt.Fprintf(w, "Result added: %s defeated %s. Game id is %s", addedGameEntry.Winner, addedGameEntry.Loser, addedGameEntry.Id)
 		default:
 			usage(w)
 		}
@@ -113,4 +132,22 @@ func usage(w http.ResponseWriter) {
 	fmt.Fprintln(w, "ratings: see the ratings table")
 	fmt.Fprintln(w, "h2h <player_name>: see player's head-to-head stats vs everyone else")
 	fmt.Fprintln(w, "log: see all the games played so far")
+}
+
+func loadTableFromJsonStore() elo.Table {
+	store := elo.JsonFileTableStore{
+		Filepath: "eloTable.json",
+	}
+	table, err := store.Load()
+	if err != nil {
+		panic(err)
+	}
+	return table
+}
+
+func saveTableToJsonStore(table elo.Table) error {
+	store := elo.JsonFileTableStore{
+		Filepath: "eloTable.json",
+	}
+	return store.Save(table)
 }
