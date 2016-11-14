@@ -13,8 +13,8 @@ import (
 )
 
 type Response struct {
-	ResponseType string `json:response_type`
-	Text         string `json:text`
+	ResponseType string `json:"response_type"`
+	Text         string `json:"text"`
 }
 
 func main() {
@@ -106,6 +106,7 @@ func main() {
 				ResponseType: "in_channel",
 			}
 			respJson, _ := json.Marshal(resp)
+			fmt.Println(string(respJson))
 			w.Header().Set("Content-Type", "application/json")
 			fmt.Fprintf(w, string(respJson))
 		default:
