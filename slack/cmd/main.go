@@ -100,8 +100,7 @@ func main() {
 				return
 			}
 			addedGameEntry := table.GameLog.Entries[len(table.GameLog.Entries)-1]
-			var msg string
-			fmt.Sprintf(msg, "Result added: %s defeated %s. Game id is %s", addedGameEntry.Winner, addedGameEntry.Loser, addedGameEntry.Id)
+			msg := fmt.Sprintf("Result added: %s defeated %s. Game id is %s", addedGameEntry.Winner, addedGameEntry.Loser, addedGameEntry.Id)
 			resp := Response{
 				Text: msg,
 				ResponseType: "in_channel",
