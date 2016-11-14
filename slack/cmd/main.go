@@ -2,14 +2,20 @@ package main
 
 import (
 	"fmt"
+	"github.com/aceakash/elo"
 	"github.com/gorilla/handlers"
 	"log"
 	"net/http"
 	"os"
 	"strings"
-	"github.com/aceakash/elo"
 	"sync"
+	"encoding/json"
 )
+
+type Response struct {
+	ResponseType string `json:response_type`
+	Text         string `json:text`
+}
 
 func main() {
 	table := loadTableFromJsonStore()
@@ -94,7 +100,15 @@ func main() {
 				return
 			}
 			addedGameEntry := table.GameLog.Entries[len(table.GameLog.Entries)-1]
-			fmt.Fprintf(w, "Result added: %s defeated %s. Game id is %s", addedGameEntry.Winner, addedGameEntry.Loser, addedGameEntry.Id)
+			var msg string
+			fmt.Sprintf(msg, "Result added: %s defeated %s. Game id is %s", addedGameEntry.Winner, addedGameEntry.Loser, addedGameEntry.Id)
+			resp := Response{
+				Text: msg,
+				ResponseType: "in_channel",
+			}
+			respJson, _ := json.Marshal(resp)
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintf(w, string(respJson))
 		default:
 			usage(w)
 		}
