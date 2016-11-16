@@ -1,6 +1,8 @@
 package elo
 
-import "time"
+import (
+	"time"
+)
 
 type GameLog struct {
 	Entries []GameLogEntry `json:entries`
@@ -39,3 +41,25 @@ func (gl GameLog) Less(i, j int) bool {
 func (gl GameLog) Swap(i, j int) {
 	gl.Entries[i], gl.Entries[j] = gl.Entries[j], gl.Entries[i]
 }
+
+func (gl GameLog) HavePlayedOnTheDay(player1 string, player2 string, day time.Time) bool {
+	for _, game := range gl.Entries {
+		//fmt.Println(game)
+		gy, gm, gd := game.Created.Date()
+		//fmt.Println("game", gy, gm, gd)
+		ny, nm, nd := day.Date()
+		//fmt.Println("param", gy, gm, gd)
+		if !(gd == nd && gm == nm && gy == ny) {
+			continue
+		}
+		if game.Winner != player1 && game.Winner != player2 {
+			continue
+		}
+		if game.Loser != player1 && game.Loser != player2 {
+			continue
+		}
+		return true
+	}
+	return false
+}
+

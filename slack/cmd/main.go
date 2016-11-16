@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 	"encoding/json"
+	"time"
 )
 
 type Response struct {
@@ -85,6 +86,10 @@ func main() {
 			}
 			winner := removeAtPrefix(commands[1])
 			loser := removeAtPrefix(commands[2])
+			if table.GameLog.HavePlayedOnTheDay(winner, loser, time.Now()) {
+				fmt.Fprint(w, "Sorry, those players have already played today! Look at `/pool log`")
+				return
+			}
 			err := table.AddResult(winner, loser, user)
 			if err != nil {
 				if err == elo.PlayerDoesNotExist {
@@ -167,3 +172,4 @@ func saveTableToJsonStore(table elo.Table) error {
 	}
 	return store.Save(table)
 }
+
