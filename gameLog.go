@@ -44,22 +44,18 @@ func (gl GameLog) Swap(i, j int) {
 
 func (gl GameLog) HavePlayedOnTheDay(player1 string, player2 string, day time.Time) bool {
 	for _, game := range gl.Entries {
-		//fmt.Println(game)
-		gy, gm, gd := game.Created.Date()
-		//fmt.Println("game", gy, gm, gd)
-		ny, nm, nd := day.Date()
-		//fmt.Println("param", gy, gm, gd)
-		if !(gd == nd && gm == nm && gy == ny) {
-			continue
+		sameDay := isSameDay(day, game.Created)
+		player1Found := player1 == game.Winner || player1 == game.Loser
+		player2Found := player2 == game.Winner || player2 == game.Loser
+		if sameDay && player1Found && player2Found {
+			return true
 		}
-		if game.Winner != player1 && game.Winner != player2 {
-			continue
-		}
-		if game.Loser != player1 && game.Loser != player2 {
-			continue
-		}
-		return true
 	}
 	return false
 }
 
+func isSameDay(time1, time2 time.Time) bool {
+	gy, gm, gd := time1.Date()
+	ny, nm, nd := time2.Date()
+	return gd == nd && gm == nm && gy == ny
+}
