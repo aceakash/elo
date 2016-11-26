@@ -131,11 +131,11 @@ func main() {
 		log.Fatal("Error while starting the server", err)
 	}
 }
-func printH2H(w http.ResponseWriter, player string, h2HRecords []elo.H2HRecord) {
+func printH2H(w http.ResponseWriter, player string, h2HRecords map[string]*elo.H2HRecord) {
 	fmt.Fprintln(w, "```")
 	fmt.Fprintf(w, "H2H for %s:\n", player)
-	for _, h2hr := range h2HRecords {
-		fmt.Fprintf(w, "%d - %d  vs %s\n", h2hr.Won, h2hr.Lost, h2hr.Opponent)
+	for opponent, h2hr := range h2HRecords {
+		fmt.Fprintf(w, "%d - %d  vs %s\n", h2hr.Won, h2hr.Lost, opponent)
 	}
 	fmt.Fprintln(w, "```")
 }

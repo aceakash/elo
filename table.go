@@ -115,3 +115,35 @@ func (table *Table) RecalculateRatingsFromLog() error {
 	return nil
 }
 
+// H2HRecord is a head-to-head record for a player against a particular opponent.
+type H2HRecord struct {
+	Won      int
+	Lost     int
+}
+
+
+// HeadToHeadAll returns all the h2h stats for the specified player.
+func (table Table) HeadToHeadAll(player string) (map[string]*H2HRecord, error) {
+	h2h := make(map[string]*H2HRecord)
+	if _, found := table.Players[player]; !found {
+		return h2h, PlayerDoesNotExist
+	}
+
+	for _, game := range table.GameLog.Entries {
+		opponent := GetOpponent(game, player)
+		if opponent == "" {
+			continue
+		}
+		opponentRecord, found := h2h[opponent]
+		if !found {
+			opponentRecord = &H2HRecord{}
+			h2h[opponent] = opponentRecord
+		}
+		if player == game.Winner {
+			opponentRecord.Won++
+		} else {
+			opponentRecord.Lost++
+		}
+	}
+	return h2h, nil
+}

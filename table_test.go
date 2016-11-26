@@ -86,6 +86,19 @@ func TestTable_RecalculateRatingsFromLog_Works(t *testing.T) {
 	assert.Equal(t, accurateTable.Players["diana"].Rating, wrongTable.Players["diana"].Rating, "Diana has wrong rating")
 }
 
+func TestTable_HeadToHeadAll_NonExistentPlayer(t *testing.T) {
+	// arrange
+	table := NewTable(32, 2000)
+	table.Register("peter")
+	table.Register("natasha")
+
+	// act
+	_, err := table.HeadToHeadAll("gruffalo")
+
+	// assert
+	assert.Equal(t, PlayerDoesNotExist, err)
+}
+
 func TestTable_HeadToHeadAll(t *testing.T) {
 	table := NewTable(32, 2000)
 	table.Register("steve")
@@ -97,9 +110,9 @@ func TestTable_HeadToHeadAll(t *testing.T) {
 
 	recs, err := table.HeadToHeadAll("steve")
 	assert.Nil(t, err)
-	assert.Equal(t, 3, recs[0].Won)
-	assert.Equal(t, 1, recs[0].Lost)
-	assert.Equal(t, "tony", recs[0].Opponent)
+	assert.NotNil(t, recs["tony"], "Must have a H2H record against tony")
+	assert.Equal(t, 3, recs["tony"].Won)
+	assert.Equal(t, 1, recs["tony"].Lost)
 }
 
 func TestTable_GetPlayersSortedByRating(t *testing.T) {

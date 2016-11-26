@@ -59,3 +59,17 @@ func isSameDay(time1, time2 time.Time) bool {
 	ny, nm, nd := time2.Date()
 	return gd == nd && gm == nm && gy == ny
 }
+
+// GetOpponent gets the opponent name for a player from a game.
+// Returns "" if player did not play in the game.
+func GetOpponent(game GameLogEntry, player string) string {
+	switch {
+	case player == game.Winner:
+		return game.Loser
+	case player == game.Loser:
+		return game.Winner
+	default:
+		return ""
+	}
+}
+
