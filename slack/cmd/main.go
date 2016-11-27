@@ -38,9 +38,11 @@ func main() {
 		case "ratings":
 			table = loadTableFromJsonStore()
 			fmt.Fprint(w, "```\n")
-			fmt.Fprint(w, "#  |                           |      |     |    \n")
+			fmt.Fprint(w, "#  |                           | Played | Won | Win % | Pts/Game   \n")
 			for i, player := range table.GetPlayersSortedByRating() {
-				fmt.Fprintf(w, "%2d | %25s | %4d | %3d | %3d \n", i + 1, player.Name, player.Rating, player.Played, player.Won)
+				winPerc := (player.Won*100/player.Played)
+				ptsPerGame := (player.Rating - 2000)/player.Played;
+				fmt.Fprintf(w, "%2d | %25s | %6d | %3d | %.1f | %.1f \n", i + 1, player.Name, player.Rating, player.Played, player.Won, winPerc, ptsPerGame)
 			}
 			fmt.Fprint(w, "```")
 		case "log":
