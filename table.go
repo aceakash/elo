@@ -8,10 +8,10 @@ import (
 
 // Table holds the ratings of all registered players.
 type Table struct {
-	ConstantFactor int               `json:constantFactor`
-	Players        map[string]Player `json:players`
-	InitialRating  int               `json:initialRating`
-	GameLog        GameLog           `json:gameLog`
+	ConstantFactor int
+	Players        map[string]Player
+	InitialRating  int
+	GameLog        GameLog
 }
 
 // NewTable creates a new table.
@@ -63,18 +63,18 @@ func (table *Table) AddResult(winner, loser, reporter string) error {
 	table.Players[winner] = winningPlayer
 	table.Players[loser] = losingPlayer
 	gle := GameLogEntry{
-		Id: RandSeq(8),
+		Id:      RandSeq(8),
 		Created: time.Now(),
 		Winner:  winner,
 		Loser:   loser,
 		Notes:   "",
 		WinnerChange: RatingChange{
 			Before: wOld,
-			After: wNew,
+			After:  wNew,
 		},
 		LoserChange: RatingChange{
 			Before: lOld,
-			After: lNew,
+			After:  lNew,
 		},
 		AddedBy: reporter,
 	}
@@ -117,10 +117,9 @@ func (table *Table) RecalculateRatingsFromLog() error {
 
 // H2HRecord is a head-to-head record for a player against a particular opponent.
 type H2HRecord struct {
-	Won      int
-	Lost     int
+	Won  int
+	Lost int
 }
-
 
 // HeadToHeadAll returns all the h2h stats for the specified player.
 func (table Table) HeadToHeadAll(player string) (map[string]*H2HRecord, error) {

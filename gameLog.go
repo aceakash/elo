@@ -5,23 +5,23 @@ import (
 )
 
 type GameLog struct {
-	Entries []GameLogEntry `json:entries`
+	Entries []GameLogEntry
 }
 
 type GameLogEntry struct {
-	Id           string       `json:id`
-	Created      time.Time    `json:created`
-	Winner       string       `json:winner`
-	Loser        string       `json:loser`
-	Notes        string       `json:notes`
-	WinnerChange RatingChange `json:winnerChange`
-	LoserChange  RatingChange `json:loserChange`
-	AddedBy      string       `json:addedBy`
+	Id           string
+	Created      time.Time
+	Winner       string
+	Loser        string
+	Notes        string
+	WinnerChange RatingChange
+	LoserChange  RatingChange
+	AddedBy      string
 }
 
 type RatingChange struct {
-	Before int `json:before`
-	After  int `json:after`
+	Before int
+	After  int
 }
 
 func NewGameLog() GameLog {
@@ -72,4 +72,3 @@ func GetOpponent(game GameLogEntry, player string) string {
 		return ""
 	}
 }
-
