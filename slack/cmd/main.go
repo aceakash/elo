@@ -40,8 +40,14 @@ func main() {
 			fmt.Fprint(w, "```\n")
 			fmt.Fprint(w, "#  |                           | Played | Won | Win % | Pts/Game   \n")
 			for i, player := range table.GetPlayersSortedByRating() {
-				winPerc := (player.Won*100/player.Played)
-				ptsPerGame := (player.Rating - 2000)/player.Played;
+				var winPerc, ptsPerGame float32
+				if player.Played == 0 {
+					winPerc = 0.0
+					ptsPerGame = 0.0
+				} else {
+					winPerc = float32(player.Won*100)/float32(player.Played)
+					ptsPerGame = float32(player.Rating - 2000)/float32(player.Played);
+				}
 				fmt.Fprintf(w, "%2d | %25s | %6d | %3d | %.1f | %.1f \n", i + 1, player.Name, player.Rating, player.Played, player.Won, winPerc, ptsPerGame)
 			}
 			fmt.Fprint(w, "```")
