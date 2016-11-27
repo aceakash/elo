@@ -48,7 +48,7 @@ func main() {
 					winPerc = float32(player.Won*100)/float32(player.Played)
 					ptsPerGame = float32(player.Rating - 2000)/float32(player.Played);
 				}
-				fmt.Fprintf(w, "%2d | %25s | %6d | %3d | %.1f | %.1f \n", i + 1, player.Name, player.Rating, player.Played, player.Won, winPerc, ptsPerGame)
+				fmt.Fprintf(w, "%2d | %25s | %6d | %3d | %3d | %.1f | %.1f  \n", i + 1, player.Name, player.Rating, player.Played, player.Won, winPerc, ptsPerGame)
 			}
 			fmt.Fprint(w, "```")
 		case "log":
