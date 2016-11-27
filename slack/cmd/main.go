@@ -1,16 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/aceakash/elo"
-	"github.com/gorilla/handlers"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 	"sync"
-	"encoding/json"
 	"time"
+
+	"github.com/aceakash/elo"
+	"github.com/gorilla/handlers"
 )
 
 type Response struct {
@@ -38,9 +39,17 @@ func main() {
 		case "ratings":
 			table = loadTableFromJsonStore()
 			fmt.Fprint(w, "```\n")
-			fmt.Fprint(w, "#  |                           |      |     |    \n")
+			fmt.Fprint(w, "#  |                           |      |  P  |  W  | W %  | Pts/Game   \n")
 			for i, player := range table.GetPlayersSortedByRating() {
-				fmt.Fprintf(w, "%2d | %25s | %4d | %3d | %3d \n", i + 1, player.Name, player.Rating, player.Played, player.Won)
+				var winPerc, ptsPerGame float32
+				if player.Played == 0 {
+					winPerc = 0.0
+					ptsPerGame = 0.0
+				} else {
+					winPerc = float32(player.Won*100) / float32(player.Played)
+					ptsPerGame = float32(player.Rating-2000) / float32(player.Played)
+				}
+				fmt.Fprintf(w, "%2d | %25s | %4d | %3d | %3d | %3.1f | %5.2f  \n", i+1, player.Name, player.Rating, player.Played, player.Won, winPerc, ptsPerGame)
 			}
 			fmt.Fprint(w, "```")
 		case "log":
@@ -108,7 +117,7 @@ func main() {
 			addedGameEntry := table.GameLog.Entries[len(table.GameLog.Entries)-1]
 			msg := fmt.Sprintf("Result added by %s: %s defeated %s. Game id is %s", addedGameEntry.AddedBy, addedGameEntry.Winner, addedGameEntry.Loser, addedGameEntry.Id)
 			resp := Response{
-				Text: msg,
+				Text:         msg,
 				ResponseType: "in_channel",
 			}
 			respJson, _ := json.Marshal(resp)
@@ -172,4 +181,3 @@ func saveTableToJsonStore(table elo.Table) error {
 	}
 	return store.Save(table)
 }
-
