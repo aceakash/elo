@@ -26,7 +26,7 @@ func main() {
 
 	RespondToPoolCommands := func(w http.ResponseWriter, r *http.Request) {
 		text := strings.ToLower(r.URL.Query().Get("text"))
-		user := r.URL.Query().Get("user_name")
+		user := strings.ToLower(r.URL.Query().Get("user_name"))
 
 		fmt.Println("Text", text)
 		commands := strings.Split(text, " ")

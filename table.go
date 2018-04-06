@@ -2,6 +2,7 @@ package elo
 
 import (
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -25,6 +26,7 @@ func NewTable(constantFactor int, initialRating int) Table {
 
 // Register adds a new player to the table.
 func (table *Table) Register(playerName string) error {
+	playerName = sanitiseName(playerName)
 	if _, exists := table.Players[playerName]; exists {
 		return PlayerAlreadyExists
 	}
@@ -33,6 +35,10 @@ func (table *Table) Register(playerName string) error {
 		Name:   playerName,
 	}
 	return nil
+}
+
+func sanitiseName(name string) string {
+	return strings.ToLower(name)
 }
 
 // AddResult adds the result of a match to the table.
